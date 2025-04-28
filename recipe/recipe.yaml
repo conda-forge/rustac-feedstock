@@ -11,6 +11,7 @@ source:
   sha256: 1ba857408aff59ce5c1dfab052b2e94ab9cca14253778b8f9da15208887b16f6
 
 build:
+  number: 0
   python:
     entry_points:
       - rustac = rustac:main
@@ -26,7 +27,6 @@ build:
     - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip:
     - match(python, "<3.10")
-  number: 0
 
 requirements:
   build:
@@ -35,9 +35,9 @@ requirements:
     - ${{ compiler("rust") }}
     - cargo-bundle-licenses
   host:
-    - python
     - maturin >=1.7,<2.0
     - pip
+    - python
   run:
     - python
 
