@@ -1,18 +1,20 @@
-{% set name = "rustac" %}
-{% set version = "0.6.0" %}
+context:
+  name: rustac
+  version: "0.6.0"
 
 package:
-  name: {{ name|lower }}
-  version: {{ version }}
+  name: ${{ name|lower }}
+  version: ${{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/rustac-{{ version }}.tar.gz
   sha256: 1ba857408aff59ce5c1dfab052b2e94ab9cca14253778b8f9da15208887b16f6
 
 build:
-  entry_points:
-    - rustac = rustac:main
-  script: 
+  python:
+    entry_points:
+      - rustac = rustac:main
+  script:
     - if: win # work around long path problem, https://github.com/conda-forge/staged-recipes/commit/d86e4bb10154fc3833cae054e197ea2d7119dac7
       then: |
         set CARGO_HOME=C:\.cargo
@@ -24,7 +26,7 @@ build:
     - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip:
     - match(python, "<3.10")
-  number: 1
+  number: 0
 
 requirements:
   build:
@@ -39,19 +41,19 @@ requirements:
   run:
     - python
 
-test:
-  imports:
-    - rustac
-  commands:
-    - pip check
-    - rustac --help
-  requires:
-    - pip
+tests:
+  - python:
+      imports:
+        - rustac
+      pip_check: true
+  - script:
+      - rustac --help
 
 about:
-  home: https://stac-utils.github.io/rustac
+  homepage: https://stac-utils.github.io/rustac
+  repository: https://github.com/stac-utils/rustac
   summary: A no-dependency Python package for STAC, using Rust under the hood.
-  license: MIT AND Apache-2.0
+  license: MIT OR Apache-2.0
   license_file:
     - LICENSE-APACHE
     - LICENSE-MIT
