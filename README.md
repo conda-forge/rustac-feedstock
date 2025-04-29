@@ -3,13 +3,13 @@ About rustac-feedstock
 
 Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/rustac-feedstock/blob/main/LICENSE.txt)
 
-Home: https://stac-utils.github.io/rustac
+Home: https://stac-utils.github.io/rustac-py
 
 Package license: MIT OR Apache-2.0
 
 Summary: A no-dependency Python package for STAC, using Rust under the hood.
 
-Development: https://github.com/stac-utils/rustac
+Development: https://github.com/stac-utils/rustac-py
 
 Current build status
 ====================
