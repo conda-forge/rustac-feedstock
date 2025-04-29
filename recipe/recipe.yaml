@@ -50,8 +50,8 @@ tests:
       - rustac --help
 
 about:
-  homepage: https://stac-utils.github.io/rustac
-  repository: https://github.com/stac-utils/rustac
+  homepage: https://stac-utils.github.io/rustac-py
+  repository: https://github.com/stac-utils/rustac-py
   summary: A no-dependency Python package for STAC, using Rust under the hood.
   license: MIT OR Apache-2.0
   license_file:
