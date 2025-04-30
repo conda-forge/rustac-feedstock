@@ -1,6 +1,6 @@
 context:
   name: rustac
-  version: "0.6.0"
+  version: "0.7.0"
 
 package:
   name: ${{ name|lower }}
@@ -8,7 +8,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/rustac-${{ version }}.tar.gz
-  sha256: 1ba857408aff59ce5c1dfab052b2e94ab9cca14253778b8f9da15208887b16f6
+  sha256: c16fdd076e78391cba4bca237379ff036ddc664d6ea68c29a79711b9a578c249
 
 build:
   number: 0
@@ -26,7 +26,7 @@ build:
     - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
     - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip:
-    - match(python, "<3.10")
+    - match(python, "<3.11")
 
 requirements:
   build:
