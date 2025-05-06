@@ -11,7 +11,7 @@ source:
   sha256: 696c0486db2fac9b4bd2794fdfe8f1c2faf57ba70f3832cadd0994b0f04dbbe4
 
 build:
-  number: 0
+  number: 1
   python:
     entry_points:
       - rustac = rustac:main
