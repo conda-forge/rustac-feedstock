@@ -11,7 +11,7 @@ source:
   sha256: 696c0486db2fac9b4bd2794fdfe8f1c2faf57ba70f3832cadd0994b0f04dbbe4
 
 build:
-  number: 0
+  number: 1
   python:
     entry_points:
       - rustac = rustac:main
@@ -34,6 +34,11 @@ requirements:
     - ${{ compiler("cxx") }} # needed to compile libduckdb-sys
     - ${{ compiler("rust") }}
     - cargo-bundle-licenses
+    - if: build_platform != target_platform
+      then:
+        - cross-python_${{ target_platform }}
+        - maturin >=1.7,<2.0
+        - python
   host:
     - maturin >=1.7,<2.0
     - pip
