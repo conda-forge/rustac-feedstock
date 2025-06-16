@@ -1,6 +1,6 @@
 context:
   name: rustac
-  version: "0.8.0"
+  version: "0.8.1"
 
 package:
   name: ${{ name|lower }}
@@ -8,7 +8,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/rustac-${{ version }}.tar.gz
-  sha256: ecb32635228bada364c4968822ae009d3cab4e2369746a9cc8c9cc6b20229950
+  sha256: 2a3c3e7609d6bda7f961e6a269732747e9a7b9239aef4e057a5b0781dc951449
 
 build:
   number: 0
