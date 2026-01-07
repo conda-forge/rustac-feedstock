@@ -1,6 +1,7 @@
 context:
   name: rustac
   version: "0.9.3"
+  python_min: "3.11"
 
 package:
   name: ${{ name|lower }}
@@ -15,18 +16,19 @@ build:
   python:
     entry_points:
       - rustac = rustac:main
+    version_independent: true
   script:
     - if: win # work around long path problem, https://github.com/conda-forge/staged-recipes/commit/d86e4bb10154fc3833cae054e197ea2d7119dac7
       then: |
         set CARGO_HOME=C:\.cargo
-        set MATURIN_PEP517_ARGS="--features=duckdb-bundled"
+        set MATURIN_PEP517_ARGS="--features=pyo3/abi3-py311,duckdb-bundled"
         md %CARGO_HOME%
       else: |
-        export MATURIN_PEP517_ARGS="--features=duckdb-bundled,openssl-vendored"
+        export MATURIN_PEP517_ARGS="--features=pyo3/abi3-py311,duckdb-bundled,openssl-vendored"
     - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
     - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip:
-    - match(python, "<3.11")
+    - not (match(python, python_min ~ ".*") and is_abi3)
 
 requirements:
   build:
@@ -43,17 +45,34 @@ requirements:
   host:
     - maturin >=1.7,<2.0
     - pip
-    - python
+    - python ${{ python_min }}.*
+    - if: is_abi3
+      then:
+        - python-abi3 ${{ python_min }}.*
   run:
-    - python
+    - python >=${{ python_min }}
 
 tests:
   - python:
       imports:
         - rustac
       pip_check: true
+      python_version: ["${{ python_min ~ '.*' }}"]
   - script:
       - rustac --help
+      # NOTE: we must manually set SP_DIR since it is not set.
+      # Can be removed once https://github.com/prefix-dev/rattler-build/issues/1733 is fixed.
+      - if: unix and is_abi3
+        then:
+          - export SP_DIR=$(python -c "import site; print(site.getsitepackages()[0])")
+          - abi3audit $SP_DIR/rustac/rustac.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}
+      - if: win and is_abi3
+        then:
+          - set "SP_DIR=%PREFIX%\\Lib\\site-packages"
+          - abi3audit %SP_DIR%\\rustac\\rustac.pyd -s -v --assume-minimum-abi3 ${{ python_min }}
+    requirements:
+      run:
+        - abi3audit
 
 about:
   homepage: https://stac-utils.github.io/rustac-py
