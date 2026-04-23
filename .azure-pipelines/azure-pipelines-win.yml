@@ -12,7 +12,7 @@ jobs:
         CONFIG: win_64_python3.11.____cpython
         UPLOAD_PACKAGES: 'True'
         store_build_artifacts: false
-  timeoutInMinutes: 720
+  timeoutInMinutes: 360
   variables:
     CONDA_BLD_PATH: D:\\bld\\
     MINIFORGE_HOME: D:\Miniforge
