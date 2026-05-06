@@ -1,6 +1,6 @@
 context:
   name: rustac
-  version: "0.9.9"
+  version: "0.9.11"
   python_min: "3.11"
 
 package:
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/rustac-${{ version }}.tar.gz
-  sha256: 061062dbcfc085f093658dda2aa262955f5a1ca11c8f6a621863f048e6830272
+  sha256: f124c74602fee38e23db15715173d1c7561b321029b393881d577e36f1556cf4
 
 build:
   number: 0
@@ -18,15 +18,19 @@ build:
       - rustac = rustac:main
     version_independent: true
   script:
-    - if: win # work around long path problem, https://github.com/conda-forge/staged-recipes/commit/d86e4bb10154fc3833cae054e197ea2d7119dac7
-      then: |
-        set CARGO_HOME=C:\.cargo
-        set MATURIN_PEP517_ARGS="--features=pyo3/abi3-py311,duckdb-bundled"
-        md %CARGO_HOME%
-      else: |
-        export MATURIN_PEP517_ARGS="--features=pyo3/abi3-py311,duckdb-bundled,openssl-vendored"
-    - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
-    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+    env:
+      PYTHONUTF8: "1"
+    content:
+      - if: win # work around long path problem, https://github.com/conda-forge/staged-recipes/commit/d86e4bb10154fc3833cae054e197ea2d7119dac7
+        then: |
+          set CARGO_HOME=C:\.cargo
+          set MATURIN_PEP517_ARGS="--features=pyo3/abi3-py311,duckdb-bundled"
+          set CARGO_ENCODED_RUSTFLAGS=-Clink-arg=Rstrtmgr.lib
+          md %CARGO_HOME%
+        else: |
+          export MATURIN_PEP517_ARGS="--features=pyo3/abi3-py311,duckdb-bundled,openssl-vendored"
+      - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
+      - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip:
     - not (match(python, python_min ~ ".*") and is_abi3)
 
@@ -60,16 +64,10 @@ tests:
       python_version: ["${{ python_min ~ '.*' }}"]
   - script:
       - rustac --help
-      # NOTE: we must manually set SP_DIR since it is not set.
-      # Can be removed once https://github.com/prefix-dev/rattler-build/issues/1733 is fixed.
       - if: unix and is_abi3
-        then:
-          - export SP_DIR=$(python -c "import site; print(site.getsitepackages()[0])")
-          - abi3audit $SP_DIR/rustac/rustac.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}
+        then: abi3audit $SP_DIR/rustac/rustac.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}
       - if: win and is_abi3
-        then:
-          - set "SP_DIR=%PREFIX%\\Lib\\site-packages"
-          - abi3audit %SP_DIR%\\rustac\\rustac.pyd -s -v --assume-minimum-abi3 ${{ python_min }}
+        then: abi3audit %SP_DIR%\\rustac\\rustac.pyd -s -v --assume-minimum-abi3 ${{ python_min }}
     requirements:
       run:
         - abi3audit
