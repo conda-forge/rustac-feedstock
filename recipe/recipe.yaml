@@ -1,6 +1,6 @@
 context:
   name: rustac
-  version: "0.9.12"
+  version: "0.9.13"
   python_min: "3.11"
 
 package:
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/rustac-${{ version }}.tar.gz
-  sha256: 9594c4ffb4f1a62606d75fd3a31b002eb4e5a98e1160871f5aa6b2d16791a14b
+  sha256: d128b6d38f0d6af6f1c21c412442f575b86077325f95467556ff04cc483c5ba5
 
 build:
   number: 0
