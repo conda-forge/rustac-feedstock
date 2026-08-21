@@ -1,6 +1,6 @@
 context:
   name: rustac
-  version: "0.9.16"
+  version: "0.9.17"
   python_min: "3.11"
 
 package:
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/rustac-${{ version }}.tar.gz
-  sha256: 8841bcc27236e0de99dd82978df0fa6528a4f2b30fc4dab83d2ff7803aa8e68d
+  sha256: fd65e922e52f277d38f500f3e43fb7c76ea7ffb5d1209bc29a74a5c4754caf4d
 
 build:
   number: 0
@@ -61,7 +61,9 @@ tests:
       imports:
         - rustac
       pip_check: true
-      python_version: ["${{ python_min ~ '.*' }}"]
+      python_version:
+        - ${{ python_min }}.*
+        - "*"
   - script:
       - rustac --help
       - if: unix and is_abi3
