@@ -61,7 +61,9 @@ tests:
       imports:
         - rustac
       pip_check: true
-      python_version: ["${{ python_min ~ '.*' }}"]
+      python_version:
+        - ${{ python_min }}.*
+        - "*"
   - script:
       - rustac --help
       - if: unix and is_abi3
